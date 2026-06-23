@@ -1,10 +1,11 @@
 require("dotenv/config");
 const { addonBuilder, serveHTTP } = require("stremio-addon-sdk");
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const axios = require("axios");
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE = "https://api.themoviedb.org/3";
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 let cachedManifest = null;
 let geminiBlueprints = [];
@@ -24,15 +25,35 @@ async function getImdbId(tmdbId, type) {
 }
 
 async function generateNetflixRowBlueprints() {
+    // The Gemini API call has been temporarily disabled to prevent rate-limiting errors.
+    // The application now uses a hardcoded list of homepage row concepts.
+    // To re-enable dynamic blueprint generation, you can uncomment the original code block below
+    // and ensure you have a valid and funded Gemini API key.
+    return [
+        { id: "g_1", title: "Edge-of-Your-Seat Thrillers", vibe: "suspense", type: "movie" },
+        { id: "g_2", title: "Compelling Docuseries", vibe: "true crime", type: "series" },
+        { id: "g_3", title: "Laugh-Out-Loud Comedies", vibe: "comedy", type: "movie" },
+        { id: "g_4", title: "Binge-Worthy TV Dramas", vibe: "drama", type: "series" },
+        { id: "g_5", title: "Sci-Fi & Fantasy Worlds", vibe: "sci-fi", type: "movie" },
+        { id: "g_6", title: "Critically Acclaimed Films", vibe: "drama", type: "movie" },
+        { id: "g_7", title: "Trending Now", vibe: "popular", type: "series" },
+        { id: "g_8", title: "Hot New Releases", vibe: "new", type: "movie" },
+        { id: "g_9", "title": "Award-Winning TV Shows", "vibe": "award winning", "type": "series" },
+        { id: "g_10", "title": "Family Movie Night", "vibe": "family", "type": "movie" },
+        { id: "g_11", "title": "Hilarious Stand-Up Comedy", "vibe": "stand up", "type": "movie" },
+        { id: "g_12", "title": "Swoon-Worthy Romantic Movies", "vibe": "romance", "type": "movie" }
+    ];
+
+    /*
     const prompt = `You are a Netflix executive. Design 12 human homepage row concepts tailored for general crowds. Return a strict JSON array matching this exact schema: [{"id": "g_1", "title": "Gritty Crime Thrillers", "vibe": "dark crime movies", "type": "movie"}]`;
     try {
-        const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro"});
         const result = await model.generateContent(prompt);
         const response = await result.response;
         return JSON.parse(response.text());
     } catch (error) {
         console.error("Error generating blueprints:", error);
+        // Fallback to a default list if the API call fails
         return [
             { id: "g_1", title: "Edge-of-Your-Seat Thrillers", vibe: "suspense", type: "movie" },
             { id: "g_2", title: "Compelling Docuseries", vibe: "true crime", type: "series" },
@@ -40,6 +61,7 @@ async function generateNetflixRowBlueprints() {
             { id: "g_4", title: "Binge-Worthy TV Dramas", vibe: "drama", type: "series" }
         ];
     }
+    */
 }
 
 async function fetchTMDBDiscover(vibeStr, type, page = 1) {
@@ -102,7 +124,7 @@ async function getAddonInterface() {
 
         cachedManifest = {
             id: "community.netflix.complete.engine",
-            version: "6.0.3", // Incremented version
+            version: "6.1.0", // Incremented version
             name: "Netflix Home",
             description: "Fully interactive dynamic layout engine supporting discovery, search, and detail maps.",
             resources: ["catalog", "meta"], 
