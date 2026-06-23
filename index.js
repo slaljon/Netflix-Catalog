@@ -1,5 +1,5 @@
 require("dotenv/config");
-const { addonBuilder } = require("stremio-addon-sdk");
+const { addonBuilder, serveHTTP } = require("stremio-addon-sdk");
 const { GoogleGenAI } = require("@google/genai");
 const axios = require("axios");
 
@@ -102,7 +102,7 @@ async function getAddonInterface() {
 
         cachedManifest = {
             id: "community.netflix.complete.engine",
-            version: "6.0.2", // Incremented version
+            version: "6.0.3", // Incremented version
             name: "Netflix Home",
             description: "Fully interactive dynamic layout engine supporting discovery, search, and detail maps.",
             resources: ["catalog", "meta"], 
@@ -198,12 +198,12 @@ async function getAddonInterface() {
     return builder.getInterface();
 }
 
-async function handler(req, res) {
+const serverPromise = (async () => {
     const addonInterface = await getAddonInterface();
-    addonInterface.router(req, res, () => {
-        res.statusCode = 404;
-        res.end('Not Found');
-    });
-}
+    return serveHTTP(addonInterface);
+})();
 
-module.exports = handler;
+module.exports = async (req, res) => {
+    const app = await serverPromise;
+    app(req, res);
+};
