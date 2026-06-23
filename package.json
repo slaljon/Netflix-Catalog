@@ -12,7 +12,11 @@
   "author": "Google LLC",
   "license": "Apache-2.0",
   "dependencies": {
-    "express": "^4.21.2"
+    "@google/genai": "^2.9.0",
+    "axios": "^1.18.1",
+    "dotenv": "^17.4.2",
+    "express": "^4.21.2",
+    "stremio-addon-sdk": "^1.6.10"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
