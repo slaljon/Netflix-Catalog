@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "vercel-build": "npm install"
   },
   "author": "Google LLC",
   "license": "Apache-2.0",
