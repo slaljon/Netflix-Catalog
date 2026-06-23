@@ -220,12 +220,12 @@ async function getAddonInterface() {
     return builder.getInterface();
 }
 
-const serverPromise = (async () => {
-    const addonInterface = await getAddonInterface();
-    return serveHTTP(addonInterface);
-})();
+let handler;
 
 module.exports = async (req, res) => {
-    const app = await serverPromise;
-    app(req, res);
+    if (!handler) {
+        const addonInterface = await getAddonInterface();
+        handler = serveHTTP(addonInterface);
+    }
+    handler(req, res);
 };
