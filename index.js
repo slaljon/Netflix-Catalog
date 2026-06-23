@@ -212,7 +212,7 @@ async function getAddonInterface() {
 
             return { meta };
         } catch (err) {
-            console.error("Detail meta builder failure:", err.message);
+            console.error("Detail meta builder failure:", err);
             return { meta: {} };
         }
     });
