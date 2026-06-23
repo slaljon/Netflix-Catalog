@@ -1,10 +1,8 @@
-import "dotenv/config";
-import stremio from "stremio-addon-sdk";
-const { addonBuilder } = stremio;
-import { GoogleGenAI } from "@google/genai";
-import axios from "axios";
+require("dotenv/config");
+const { addonBuilder } = require("stremio-addon-sdk");
+const { GoogleGenAI } = require("@google/genai");
+const axios = require("axios");
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_BASE = "https://api.themoviedb.org/3";
 
@@ -104,7 +102,7 @@ async function getAddonInterface() {
 
         cachedManifest = {
             id: "community.netflix.complete.engine",
-            version: "6.0.1",
+            version: "6.0.2", // Incremented version
             name: "Netflix Home",
             description: "Fully interactive dynamic layout engine supporting discovery, search, and detail maps.",
             resources: ["catalog", "meta"], 
@@ -200,10 +198,12 @@ async function getAddonInterface() {
     return builder.getInterface();
 }
 
-export default async function handler(req, res) {
+async function handler(req, res) {
     const addonInterface = await getAddonInterface();
     addonInterface.router(req, res, () => {
         res.statusCode = 404;
         res.end('Not Found');
     });
 }
+
+module.exports = handler;
